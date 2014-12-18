@@ -70,8 +70,15 @@
     [self.showImgView setMultipleTouchEnabled:YES];
     
     // scale to fit the screen
-    CGFloat oriWidth = self.cropFrame.size.width;
-    CGFloat oriHeight = self.originalImage.size.height * (oriWidth / self.originalImage.size.width);
+    CGFloat oriWidth;
+    CGFloat oriHeight;
+    if (self.originalImage.size.width > self.originalImage.size.height) {
+        oriHeight = self.cropFrame.size.height;
+        oriWidth = self.originalImage.size.width *  (oriHeight / self.originalImage.size.height);
+    } else {
+        oriWidth = self.cropFrame.size.width;
+        oriHeight = self.originalImage.size.height * (oriWidth / self.originalImage.size.width);
+    }
     CGFloat oriX = self.cropFrame.origin.x + (self.cropFrame.size.width - oriWidth) / 2;
     CGFloat oriY = self.cropFrame.origin.y + (self.cropFrame.size.height - oriHeight) / 2;
     self.oldFrame = CGRectMake(oriX, oriY, oriWidth, oriHeight);
@@ -91,7 +98,7 @@
     [self.view addSubview:self.overlayView];
     
     self.ratioView = [[UIView alloc] initWithFrame:self.cropFrame];
-    self.ratioView.layer.borderColor = [UIColor yellowColor].CGColor;
+    self.ratioView.layer.borderColor = [UIColor grayColor].CGColor;
     self.ratioView.layer.borderWidth = 1.0f;
     self.ratioView.autoresizingMask = UIViewAutoresizingNone;
     [self.view addSubview:self.ratioView];
@@ -104,7 +111,7 @@
     cancelBtn.backgroundColor = self.btnBgColor ? self.btnBgColor : [UIColor blackColor];
     cancelBtn.titleLabel.textColor = [UIColor whiteColor];
     [cancelBtn setTitle:self.cancelTitle ? self.cancelTitle : @"Cancel" forState:UIControlStateNormal];
-    [cancelBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
+    [cancelBtn.titleLabel setFont:[UIFont systemFontOfSize:18.0f]];
     [cancelBtn.titleLabel setTextAlignment:NSTextAlignmentCenter];
     [cancelBtn.titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
     [cancelBtn.titleLabel setNumberOfLines:0];
@@ -116,7 +123,7 @@
     confirmBtn.backgroundColor = self.btnBgColor ? self.btnBgColor : [UIColor blackColor];
     confirmBtn.titleLabel.textColor = [UIColor whiteColor];
     [confirmBtn setTitle:self.confirmTitle ? self.confirmTitle : @"OK" forState:UIControlStateNormal];
-    [confirmBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
+    [confirmBtn.titleLabel setFont:[UIFont systemFontOfSize:18.0f]];
     [confirmBtn.titleLabel setTextAlignment:NSTextAlignmentCenter];
     confirmBtn.titleLabel.textColor = [UIColor whiteColor];
     [confirmBtn.titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
@@ -124,6 +131,13 @@
     [confirmBtn setTitleEdgeInsets:UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f)];
     [confirmBtn addTarget:self action:@selector(confirm:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:confirmBtn];
+    
+    UILabel *moveAndScaleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50.0f - [UIApplication sharedApplication].statusBarFrame.size.height/*(self.cropFrame.origin.y - [UIApplication sharedApplication].statusBarFrame.size.height) / 2*/, self.view.frame.size.width, 30.0)];
+    moveAndScaleLabel.textColor = [UIColor whiteColor];
+    moveAndScaleLabel.text = @"Move and Scale";
+//    moveAndScaleLabel.center = CGPointMake(self.view.frame.size.width, 20.0f);
+    moveAndScaleLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:moveAndScaleLabel];
 }
 
 - (void)cancel:(id)sender {
@@ -240,12 +254,16 @@
 - (CGRect)handleBorderOverflow:(CGRect)newFrame {
     // horizontally
     if (newFrame.origin.x > self.cropFrame.origin.x) newFrame.origin.x = self.cropFrame.origin.x;
-    if (CGRectGetMaxX(newFrame) < self.cropFrame.size.width) newFrame.origin.x = self.cropFrame.size.width - newFrame.size.width;
+    if (CGRectGetMaxX(newFrame) < self.cropFrame.size.width) {
+        newFrame.origin.x = self.cropFrame.origin.x + self.cropFrame.size.width - newFrame.size.width;
+    }
+    
     // vertically
     if (newFrame.origin.y > self.cropFrame.origin.y) newFrame.origin.y = self.cropFrame.origin.y;
     if (CGRectGetMaxY(newFrame) < self.cropFrame.origin.y + self.cropFrame.size.height) {
         newFrame.origin.y = self.cropFrame.origin.y + self.cropFrame.size.height - newFrame.size.height;
     }
+    
     // adapt horizontally rectangle
     if (self.showImgView.frame.size.width > self.showImgView.frame.size.height && newFrame.size.height <= self.cropFrame.size.height) {
         newFrame.origin.y = self.cropFrame.origin.y + (self.cropFrame.size.height - newFrame.size.height) / 2;
