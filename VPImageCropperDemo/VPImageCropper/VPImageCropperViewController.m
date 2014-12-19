@@ -18,7 +18,7 @@
 
 @property (nonatomic, retain) UIImageView *showImgView;
 @property (nonatomic, retain) UIView *overlayView;
-@property (nonatomic, retain) UIView *ratioView;
+@property (nonatomic, retain) UIImageView *ratioView;
 
 @property (nonatomic, assign) CGRect oldFrame;
 @property (nonatomic, assign) CGRect largeFrame;
@@ -97,10 +97,13 @@
     self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.overlayView];
     
-    self.ratioView = [[UIView alloc] initWithFrame:self.cropFrame];
+    self.ratioView = [[UIImageView alloc] initWithFrame:self.cropFrame];
+    self.ratioView.contentMode = UIViewContentModeScaleAspectFill;
+    self.ratioView.image = [UIImage imageNamed:@"crop-zoom-grid.png"];
     self.ratioView.layer.borderColor = [UIColor grayColor].CGColor;
     self.ratioView.layer.borderWidth = 1.0f;
     self.ratioView.autoresizingMask = UIViewAutoresizingNone;
+    self.ratioView.userInteractionEnabled = NO;
     [self.view addSubview:self.ratioView];
     
     [self overlayClipping];
@@ -132,10 +135,9 @@
     [confirmBtn addTarget:self action:@selector(confirm:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:confirmBtn];
     
-    UILabel *moveAndScaleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50.0f - [UIApplication sharedApplication].statusBarFrame.size.height/*(self.cropFrame.origin.y - [UIApplication sharedApplication].statusBarFrame.size.height) / 2*/, self.view.frame.size.width, 30.0)];
+    UILabel *moveAndScaleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50.0f - [UIApplication sharedApplication].statusBarFrame.size.height, self.view.frame.size.width, 30.0)];
     moveAndScaleLabel.textColor = [UIColor whiteColor];
     moveAndScaleLabel.text = @"Move and Scale";
-//    moveAndScaleLabel.center = CGPointMake(self.view.frame.size.width, 20.0f);
     moveAndScaleLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:moveAndScaleLabel];
 }
@@ -204,10 +206,10 @@
         CGRect newFrame = self.showImgView.frame;
         newFrame = [self handleScaleOverflow:newFrame];
         newFrame = [self handleBorderOverflow:newFrame];
-        [UIView animateWithDuration:BOUNDCE_DURATION animations:^{
+        [UIView animateWithDuration:BOUNDCE_DURATION delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.showImgView.frame = newFrame;
             self.latestFrame = newFrame;
-        }];
+        } completion:nil];
     }
 }
 
@@ -230,10 +232,10 @@
         // bounce to original frame
         CGRect newFrame = self.showImgView.frame;
         newFrame = [self handleBorderOverflow:newFrame];
-        [UIView animateWithDuration:BOUNDCE_DURATION animations:^{
+        [UIView animateWithDuration:BOUNDCE_DURATION delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.showImgView.frame = newFrame;
             self.latestFrame = newFrame;
-        }];
+        } completion:nil];
     }
 }
 
