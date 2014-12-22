@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "VPImageCropper"
-  s.version      = “0.0.4”
+  s.version      = "0.0.4"
   s.summary      = "Used for cropping user portrait."
 
   s.description  = <<-DESC
