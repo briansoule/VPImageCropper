@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/briansoule/VPImageCropper.git", :tag => "v0.0.4" }
 
-  s.source_files  = "VPImageCropperDemo/VPImageCropper/**/*.*"
+  s.source_files  = "VPImageCropperDemo/VPImageCropper/**/*.{h,m}"
 
   s.requires_arc = true
 
