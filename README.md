@@ -1,7 +1,7 @@
-VPImageCropper
+##A fork of VPImageCropper, with a more native appearance
 ==============
 
-##Installation
+###Installation:
 
 ###Copy Source Files
 
@@ -14,7 +14,7 @@ You can simply copy VPImageCropperViewController.* files into you project.
 #### Podfile
 ```
 platform :ios, '6.0'
-pod 'VPImageCropper', '~>0.0.1'
+pod 'VPImageCropper', '~>0.0.5'
 ```
 
 ##Usage
