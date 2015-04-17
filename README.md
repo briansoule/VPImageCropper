@@ -13,7 +13,7 @@ You can simply copy VPImageCropperViewController.* files into you project.
 #### Podfile
 ```
 platform :ios, '6.0'
-pod 'VPImageCropper', '~>0.0.5'
+pod 'VPImageCropper', '~>0.0.4'
 ```
 
 ##Usage
