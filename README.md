@@ -1,5 +1,4 @@
 ##A fork of VPImageCropper, with a more native appearance
-==============
 
 ###Installation:
 
