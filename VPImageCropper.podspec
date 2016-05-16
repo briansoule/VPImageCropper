@@ -3,6 +3,7 @@ Pod::Spec.new do |s|
   s.name         = "VPImageCropper"
   s.version      = "0.0.4"
   s.summary      = "Used for cropping images."
+  s.authors      = "Shannon and Brian Soule"
 
   s.description  = <<-DESC
 			Image cropper view, for cropping and scaling images.
